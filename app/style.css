@@ -1,0 +1,61 @@
+body, html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font: 12px sans-serif;
+}
+
+body {
+  display: -webkit-flex;
+  -webkit-flex-direction: row;
+  -webkit-justify-content: flex-start;
+  align-items: stretch;
+}
+
+#sidebar {
+  width: 150px;
+  background-color: #ccc;
+  display:none;
+}
+
+#main {
+  -webkit-flex: 1;
+  display: -webkit-flex;
+  -webkit-flex-direction: column;
+  -webkit-justify-content: flex-start;
+  align-items: stretch;
+}
+
+#editor {
+   -webkit-flex: 1;
+ }
+
+#toolbar {
+  height: 40px;
+  background-color: #333;
+  -webkit-flex: none;
+  display: none;
+}
+
+#debug-container {
+  height: 100px;
+  display: -webkit-flex;
+  -webkit-flex-direction: column;
+  -webkit-justify-content: flex-start;
+}
+
+#drag {
+  background-color: #999;
+  height: 7px;
+  -webkit-flex: none;
+  cursor: row-resize;
+}
+
+#debug {
+  -webkit-flex: 1;
+  padding: 10px;
+  color: #fff;
+  background-color: #333;
+  overflow-y: scroll;
+}
+

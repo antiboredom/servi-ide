@@ -1,0 +1,13 @@
+<% include head.html %>
+<% entries.forEach(function(entry){ %>
+  <div class="entry">
+    <h2><a href="/entries/<%= entry._id %>"><%= entry.title %></a></h2>
+    <% if (entry.image) { %>
+      <img src="/uploads/<%= entry.image %>">
+    <% } %>
+    <div class="entry-content">
+      <%= entry.content %>
+    </div>
+  </div>
+<% }) %>
+<% include foot.html %>

@@ -1,0 +1,11 @@
+<% include head.html %>
+<form method="post" action="/new" enctype="multipart/form-data">
+  <label for="title">Title</label>
+  <input type="text" name="title">
+  <label for="image">Image</label>
+  <input type="file" name="image">
+  <label for="content">Content</label>
+  <textarea name="content"></textarea>
+  <input type="submit" value="Post">
+</form>
+<% include foot.html %>

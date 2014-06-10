@@ -1,0 +1,13 @@
+var bungler = require('/Users/sam/Dropbox/school/spring_2014/bungler/bungler.js');var app = new bungler();
+
+
+var counter = 0;
+
+function run(server) {
+  counter ++;
+  server.respond("You've made " + counter + " requests");
+}
+
+
+
+if (typeof run === 'function') app.defaultRoute(run);start();

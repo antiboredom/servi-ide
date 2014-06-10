@@ -1,0 +1,17 @@
+var servi = require('/Users/sam/Dropbox/school/spring_2014/servi/app/servi.js');var app = new servi();
+
+
+<% include head.html %>
+<% posts.forEach(function(post){ %>
+  <div class="post">
+    <h2><a href="/posts/<%= post._id %>"><%= post.title %></a></h2>
+    <div class="post-content">
+      <%= post.content %>
+    </div>
+  </div>
+<% }) %>
+<% include foot.html %>
+
+
+
+if (typeof run === 'function') app.defaultRoute(run);start();

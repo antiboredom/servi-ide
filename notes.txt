@@ -1,0 +1,211 @@
+Name ideas: layman, servi, tenderfoot, bumbler, greenhorn, serving, servering, tinkerjs, tinkeringjs
+
+New name: servi.js
+
+
+Editor to do:
+  * Files:
+    ** New
+    ** Open
+    ** Save
+    ** Save As
+    ** check out: https://github.com/exos/node-webkit-fdialogs
+    ** Handle multiple open projects
+    ** Switch syntax in ACE when loading new files
+    ** add custom syntax for library
+
+  * Interface
+    ** File / project drawer
+    ** Show Command-Keys in menu
+    ** Split screen view?
+
+Library to do:
+  * user os.tmpdir() for running unsaved files
+  * think about vm.createScript(code, [filename])
+  * switch to: function run() { this.respond() } ???
+  * File upload
+  * Data storage
+    ** would be great if you could see the database as a json file
+    ** mongo? sqlite?
+    ** https://www.npmjs.org/package/sqlite3
+    ** https://github.com/sequelize/sequelize-sqlite
+    ** http://www.tingodb.com/
+    ** http://blog.mongodb.org/post/55693224724/nedb-a-lightweight-javascript-database-using-mongodbs
+    ** https://github.com/rogerwang/node-webkit/wiki/Save-persistent-data-in-app
+  * Templating (handlebars? mustache, underscore? ejs?)
+  * socket.io support
+  * promises support ?
+    ** https://github.com/cujojs/when
+    ** https://github.com/kriskowal/q
+  * email
+  * server lifecycle functions (start, end, request);
+  * for templates -> make variables automatically available? maybe if they are in a certain object??
+
+
+Export to do:
+  * Figure it out
+
+Laundry:
+  * Build with grunt: https://github.com/mllrsohn/grunt-node-webkit-builder
+
+
+API ideas:
+
+deal with requestion:
+  onRequest();
+
+Start server:
+  start();
+
+End server:
+  end();
+
+log something:
+  log();
+
+change header: √
+  header();
+
+send html or text:
+  respond(str, type=html);
+
+serve a static file: √
+  serve(filename);
+
+serve a directory:
+  serveFiles("/public");
+  serveFrom("/public");
+
+render a template: √
+  template(templateString, data);
+  (switch templates to ejs?)
+
+load a file into a string: √
+  loadFile(path);
+
+connect a route to a function: √
+  route(path, function);
+  or: routes = {"/path": function, "path2": function2}
+
+dynamic routes: √
+  route("/path/:var", func);
+
+upload a file:
+  upload(data, destination)
+  remoteUpload(data,
+
+handling POST:
+  params["key"]
+
+retrieve parameters:
+  params.name
+
+set cookies:
+  https://github.com/jed/cookies
+  server.cookies.set("key", "val");
+
+retrieve cookies:
+  server.cookies.get("key");
+
+store basic data:
+  set(key, value);
+
+retrieve basic data:
+  get(key);
+
+pretty print an object: √
+  inspect(object);
+
+email:
+  mail(to, subject, body, from);
+  (also needs to deal with html & attachments)
+
+redirect: √
+  redirect(url/path);
+
+streaming:
+  stream();
+
+sockets:
+  ???
+
+database:
+  var people = new Collection();
+  collection.find({name: "sam"});
+  collection.findOne();
+  collection.insert({name: sam});
+  person.update({name: susan});
+
+
+
+
+///////////////EXAMPLE APP//////////////////
+
+function start() {
+  port(1000);
+  serveFilesFrom("public");
+}
+
+function response() {
+  route("about", about);
+}
+
+function about() {
+  if (params) {
+    people.create({name: params.name});
+    redirect_to("thanks");
+  }
+}
+
+
+////////////
+
+database stuff:
+
+collection.
+find/sort/insert/remove/update/findOne
+(all mongo commands work)
+.search("name", "shawn", function?)
+.search({name: "shawn", age: 32})
+.search({"pets.type": "dog"})
+.add({object})
+.change(id, {object})
+.delete(id)
+.get(id)
+.getAll(sortBy)  -- name 
+.getRange("name", ascending, 0, 10)
+
+var data = blog.search("author", "sam");
+data.sort("title", 1)
+data.range()
+data.retrieve(function);
+
+
+person {
+name: sadklfjdslf,
+pets: {[
+type: dog
+
+
+var data = getAll();
+request.render('template', data);
+
+
+
+function getAll() {
+  db.find({});
+
+  
+}
+
+function render() {
+  data.exec(function(err, docs){
+    request.respond();
+});
+}
+
+database.get(id, showIt);
+  
+  function showIt(theEntry){
+     request.render('templates/blogpost.html', {entry: theEntry}); 
+  }

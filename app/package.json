@@ -1,0 +1,15 @@
+{
+  "name": "servi.js",
+  "version": "0.0.1",
+  "main": "index.html",
+  "window": {
+    "title": "Servi",
+    "toolbar": false,
+    "position": "center",
+    "width": 800,
+    "height": 700,
+    "resizable": true,
+    "show": false,
+    "frame": true
+  }
+}

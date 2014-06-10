@@ -1,0 +1,49 @@
+body {
+  font: 16px sans-serif;
+  background-color: #eee;
+  width: 600px;
+  margin: auto;
+  line-height: 1.4;
+}
+
+a {
+  color: #ff0046;
+  text-decoration: none;
+}
+
+h2 {
+  padding:0;
+  margin:0;
+}
+
+.entry {
+  border-bottom: 1px dashed #ccc;
+  padding: 20px 0;
+}
+
+.entry img {
+  max-width: 600px;
+  margin-bottom: 10px;
+}
+
+textarea, input {
+  display: block;
+  width: 100%;
+  font: 16px sans-serif;
+  padding: 5px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+textarea {
+  height: 200px;
+}
+
+input[type=submit] {
+  background-color: 0;
+  color: #fff;
+}
+
+input[type=file] {
+  border: 0;
+}
