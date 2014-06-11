@@ -2,8 +2,6 @@ useDatabase('blog');
 serveFiles('public');
 
 route('/', home);
-route('/login', login);
-route('/logout', logout);
 route('/new', newEntry);
 route('/entries/:id', showEntry);
 
@@ -41,14 +39,3 @@ function showEntry(request) {
      request.render('templates/blogpost.html', {entry: theEntry}); 
   });
 }
-
-function login(request) {
-
-}
-
-function logout(request) {
-
-}
-
-//
-//findAndRender('post.html', {name: sam})
