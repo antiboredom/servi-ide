@@ -1,6 +1,7 @@
 var gui = require('nw.gui');
 var Path = require('path');
 var util = require('util');
+var os = require('os');
 var runner = require('./runner.js');
 
 var modes = {
@@ -16,6 +17,7 @@ function Editor(projectPath) {
   this.openedFiles = {};
   this.fileBuffer = {};
   this.projectPath = projectPath;
+  this.temporaryFiles = [];
 
   this.window = gui.Window.get();
   this.ace = window.ace;
@@ -46,16 +48,11 @@ function Editor(projectPath) {
 }
 
 Editor.prototype.openProject = function() {
-  this.fileTree = new FileTree(this.projectPath, this);
-  if (this.projectPath !== null) {
-    for (var i = 0; i < this.fileTree.files.length; i++) {
-      var f = this.fileTree.files[i];
-      if (f.label == 'sketch.js') {
-        this.openFile(f.path);
-        this.fileTree.selectNodeByPath(f.path);
-      }
-    }
+  if (this.projectPath === null) {
+    this.createEmptyProject();
   }
+
+  this.fileTree = new FileTree(this.projectPath, this);
 };
 
 Editor.prototype.openFile = function(path) {
@@ -86,13 +83,12 @@ Editor.prototype.handleFileChange = function() {
   this.mode = this.detectType(this.filePath);
   this.editor.getSession().setMode("ace/mode/" + this.mode);
   this.editor.focus();
-  //if (!this.projectPath) {
-    //this.fileTree.
 };
 
 Editor.prototype.getCurrentFilename = function() {
   var p = this.filePath.split("/");
-  this.currentFile = p[p.length-2] + "/" + p[p.length-1];
+  //this.currentFile = p[p.length-2] + "/" + p[p.length-1];
+  this.currentFile = p[p.length-1];
   return this.currentFile;
 };
 
@@ -108,6 +104,12 @@ Editor.prototype.setTitle = function() {
 Editor.prototype.writeFile = function() {
   var self = this;
   fs.writeFile(this.filePath, this.editor.getValue(), "utf8", function(err) {
+    if (self.projectPath === null) {
+      self.projectPath = self.filePath;
+      self.fileTree.path = Path.dirname(self.projectPath);
+      self.fileTree.filepath = self.projectPath;
+      self.fileTree.reloadTree();
+    }
     self.handleFileChange();
     //add error handling
   });
@@ -120,7 +122,7 @@ Editor.prototype.detectType = function(path) {
 }
 
 Editor.prototype.saveFile = function() {
-  if (this.filePath === null) {
+  if (this.filePath === null || this.temporaryFiles.indexOf(this.filePath) > -1) {
     this.openSaveDialog();
   } else {
     this.writeFile();
@@ -137,10 +139,35 @@ Editor.prototype.openSaveDialog = function() {
 };
 
 Editor.prototype.newFile = function() {
+  var self = this;
+  var tmpfolder = Path.join(os.tmpdir(), 'servi' + Date.now());
+  var filepath = Path.join(tmpfolder, 'Untitled ' + (this.temporaryFiles.length + 1));
+  fs.mkdir(tmpfolder, function() {
+    fs.writeFile(filepath, '', 'utf8', function(err){
+      self.fileTree.addTempFile(filepath);
+      self.temporaryFiles.push(filepath);
+      self.openFile(filepath);
+    });
+  });
 };
 
+Editor.prototype.createEmptyProject = function() {
+  this.newFile();
+}
+
+Editor.prototype.removeTempFile = function() {
+  var index = this.temporaryFiles.indexOf(this.filePath);
+  if (index > -1) {
+    this.temporaryFiles.splice(index, 1);
+  }
+  var index = this.fileTree.temporaryFiles.indexOf(this.filePath);
+  if (index > -1) {
+    this.fileTree.temporaryFiles.splice(index, 1);
+  }
+}
+
 Editor.prototype.newWindow = function() {
-  var win = gui.Window.open('index.html', {
+  var win = gui.Window.open(editorWindowURL, {
     position: 'center',
     width: 800,
     height: 800,
@@ -183,110 +210,6 @@ Editor.prototype.openOutputWindow = function(port) {
 }
 
 Editor.prototype.setShortCuts = function() {
-  var self = this;
-  self.editor.commands.addCommand({
-      name: 'Run',
-      bindKey: {mac: "Command-R", win: "Ctrl-R"},
-      exec: function(editor) {
-        self.run();
-      }
-  });
-
-  self.editor.commands.addCommand({
-      name: 'Open',
-      bindKey: {mac: "Command-O", win: "Ctrl-O"},
-      exec: function(editor) {
-        self.openProjectFolder();
-      }
-  });
-
-  self.editor.commands.addCommand({
-      name: 'Save',
-      bindKey: {mac: "Command-S", win: "Ctrl-S"},
-      exec: function(editor) {
-        self.saveFile();
-      }
-  });
-
-  self.editor.commands.addCommand({
-      name: 'Save As',
-      bindKey: {mac: "Command-Shift-S", win: "Ctrl-Shift-S"},
-      exec: function(editor) {
-        self.saveFileAs();
-      }
-  });
-
-  self.editor.commands.addCommand({
-      name: 'New',
-      bindKey: {mac: "Command-N", win: "Ctrl-N"},
-      exec: function(editor) {
-        self.newFile();
-      }
-  });
-
-  self.editor.commands.addCommand({
-      name: 'New Project',
-      bindKey: {mac: "Command-Shift-N", win: "Ctrl-Shift-N"},
-      exec: function(editor) {
-        self.newWindow();
-      }
-  });
-
-  self.editor.commands.addCommand({
-      name: 'Close',
-      bindKey: {mac: "Command-W", win: "Ctrl-W"},
-      exec: function(editor) {
-        self.close();
-      }
-  });
-
-  self.editor.commands.addCommand({
-    name: "devtool",
-    bindKey: {win: "Alt-Ctrl-J", mac: "Alt-Command-J"},
-    exec: function() {
-      self.window.showDevTools();
-    }
-  });
-
-  //self.window.on("devtools-opened", function(url) {
-    //console.log("devtools-opened: " + url);
-    //$('#debug-frame')[0].src = url;
-  //});
-
-  var menubar = new gui.Menu({ type: 'menubar' });
-  var fileMenu = new gui.Menu();
-
-  fileMenu.append(new gui.MenuItem({ label: 'New \t\t\u2318N', click: function(){
-    self.newFile();
-  }}));
-
-  fileMenu.append(new gui.MenuItem({ label: 'Open \t\t\u2318O', click: function(){
-    self.openFile();
-  }}));
-
-  fileMenu.append(new gui.MenuItem({ label: 'Close \t\t\u2318W', click: function(){
-    self.closeFile();
-  }}));
-
-  fileMenu.append(new gui.MenuItem({ label: 'Save \t\t\u2318S', click: function(){
-    self.saveFile();
-  }}));
-
-  fileMenu.append(new gui.MenuItem({ label: 'Save As \t\t\u21E7\u2318S', click: function(){
-    self.saveFileAs();
-  }}));
-
-  fileMenu.append(new gui.MenuItem({ type: 'separator' }));
-
-  fileMenu.append(new gui.MenuItem({ label: 'Save & Run \t\u2318R', click: function(){
-    self.run();
-  }}));
-
-  var help = new gui.Menu();
-  this.window.menu = menubar;
-  this.window.menu.insert(new gui.MenuItem({ label: 'File', submenu: fileMenu}), 1);
-  this.window.menu.append(new gui.MenuItem({ label: 'Help', submenu: help}));
-
 }
 
 function makeDraggable(el, vertical) {
@@ -325,12 +248,15 @@ global.log = function(msg) {
 }
 
 var path = window.location.search.substring(1).split('=')[1] || null;
-var me = window.location.href.split('?')[0];
+var editorWindowURL = window.location.href.split('?')[0];
 //var path = var path = window.PATH || gui.App.argv[0] || null
+
 var editor = new Editor(path);
+
 var opener = $("#openFile");
 opener.change(function(evt) {
-  var win = gui.Window.open(me + '?path=' + this.files[0].path, {
+  console.log(editorWindowURL);
+  var win = gui.Window.open(editorWindowURL + '?path=' + this.files[0].path, {
     position: 'center',
     width: 800,
     height: 800,
@@ -338,16 +264,46 @@ opener.change(function(evt) {
     focus: true,
     show: false
   });
+  opener.val('');
 });
 
 var saver = $('#saveFile');
 saver.change(function(evt) {
   if ($(this).val()) {
     var saveFilename = $(this).val();
+    editor.removeTempFile();
     editor.filePath = saveFilename;
     editor.writeFile();
   }
+  saver.val('');
 });
+
 onload = function() {
   gui.Window.get().show();
+  editor.editor.focus();
 }
+
+editor.window.on("close", function(){
+  var unsavedFiles = {};
+  var totalUnsaved = 0;
+  for(var p in editor.openedFiles) {
+    if(editor.openedFiles.hasOwnProperty(p)) {
+      if (editor.openedFiles[p] != editor.fileBuffer[p]) {
+        totalUnsaved ++;
+        unsavedFiles[p] = editor.fileBuffer[p];
+      }
+    }
+  }
+  if (totalUnsaved > 0) {
+    if (confirm('You have unsaved files. Save before closing?')) {
+      for(var p in unsavedFiles) {
+        if(unsavedFiles.hasOwnProperty(p)) {
+          fs.writeFileSync(p, unsavedFiles[p], "utf8");
+        }
+      }
+    }
+  }
+  this.close(true);
+  editor.window = null;
+});
+

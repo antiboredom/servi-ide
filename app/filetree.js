@@ -10,6 +10,7 @@ function FileTree(path, editor) {
     this.filepath = this.path;
     this.path = Path.dirname(this.filepath);
   }
+  this.temporaryFiles = [];
   this.editor = editor;
   this.files = [];
   this.watching = false;
@@ -23,27 +24,55 @@ function FileTree(path, editor) {
 
 FileTree.prototype.load = function() {
   if (this.path === null) {
-    this.files = [{type: 'file', path: null, label: 'untitled'}];
+    this.loadTempFiles();
   } else {
     this.files = dirTree(this.path).children;
+    this.loadTempFiles();
     this.watch();
     //$('#project-name').text(Path.basename(path));
   }
 };
 
+FileTree.prototype.loadTempFiles = function() {
+  for (var i = 0; i < this.temporaryFiles.length; i ++) {
+    this.$tree.tree('appendNode', {
+      label: 'Untitled ' + (i+1),
+      path: this.temporaryFiles[i],
+      type: 'file',
+      tmp: true
+    });
+  }
+}
+
+FileTree.prototype.addTempFile = function(path) {
+  this.temporaryFiles.push(path);
+  this.$tree.tree('appendNode', {
+    label: 'Untitled ' + this.temporaryFiles.length,
+    path: path,
+    type: 'file',
+    tmp: true
+  });
+  this.selectNodeByPath(path);
+}
+
 FileTree.prototype.watch = function() {
   var self = this;
   if (self.watching === false) {
     saw(self.path).on('all', function (ev, file) {
-      self.load();
-      self.$tree.tree('loadData', self.files);
-      if (self.filepath) {
-        self.selectNodeByPath(self.filepath);
-      }
+      self.reloadTree();
     });
     self.watching = true;
   }
 };
+
+FileTree.prototype.reloadTree = function() {
+  this.load();
+  this.$tree.tree('loadData', this.files);
+  this.loadTempFiles();
+  if (this.filepath) {
+    this.selectNodeByPath(this.filepath);
+  }
+}
 
 FileTree.prototype.display = function() {
   var self = this;
@@ -58,7 +87,9 @@ FileTree.prototype.display = function() {
     slide: false,
     onCreateLi: function(node, $li) {
       if (node.name[0] === '.') {
-        $li.hide();
+        try {
+          $li.hide();
+        } catch(e) {}
       }
     }
   });
@@ -70,6 +101,7 @@ FileTree.prototype.display = function() {
       if (node.type === 'file') {
         self.$tree.find('li').removeClass('selected');
         $(node.element).addClass('selected');
+        self.filepath = node.path;
         self.editor.openFile(node.path);
       } else {
         if (node.is_open) {
@@ -88,6 +120,12 @@ FileTree.prototype.selectNodeByPath = function(path) {
   if (node) {
     $(node.element).addClass('selected');
   }
+}
+
+FileTree.prototype.updateSelectedLabel = function(label, path) {
+  var node = this.$tree.tree('getNodeByPath', path);
+  if (node)
+    this.$tree.tree('updateNode', node, label);
 }
 
 function dirTree(filename) {
