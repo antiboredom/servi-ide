@@ -12,10 +12,30 @@ body {
   align-items: stretch;
 }
 
-#sidebar {
+#sidebar-container {
+  -webkit-user-select: none;
   width: 150px;
   background-color: #ccc;
-  display:none;
+  display: -webkit-flex;
+  -webkit-flex-direction: row;
+  -webkit-justify-content: flex-start;
+}
+
+#sidebar {
+  -webkit-flex: 1;
+}
+
+#sidebar-drag {
+  width: 7px;
+  -webkit-flex: none;
+  cursor: col-resize;
+  background-color: #999;
+}
+
+#project-name {
+  padding-left: 30px;
+  font-size: 18px;
+  font-weight: normal;
 }
 
 #main {
@@ -30,11 +50,16 @@ body {
    -webkit-flex: 1;
  }
 
+#actions {
+  margin-left: 30px;
+}
+
 #toolbar {
+  display:none;
   height: 40px;
   background-color: #333;
-  -webkit-flex: none;
-  display: none;
+  -webkit-flex-direction: column;
+  -webkit-justify-content: flex-start;
 }
 
 #debug-container {
@@ -44,7 +69,7 @@ body {
   -webkit-justify-content: flex-start;
 }
 
-#drag {
+#debug-drag {
   background-color: #999;
   height: 7px;
   -webkit-flex: none;
@@ -54,8 +79,13 @@ body {
 #debug {
   -webkit-flex: 1;
   padding: 10px;
-  color: #fff;
-  background-color: #333;
+  color: #333;
+  background-color: #eed;
   overflow-y: scroll;
 }
+
+.error {
+  color: red;
+}
+
 

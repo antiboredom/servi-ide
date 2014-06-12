@@ -6,21 +6,43 @@ var find = require('findit');
 
 function FileTree(path, editor) {
   this.path = path;
+  if (this.path !== null) {
+    this.filepath = this.path;
+    this.path = Path.dirname(this.filepath);
+  }
   this.editor = editor;
+  this.files = [];
+  this.watching = false;
   this.load();
   this.display();
-  $('#project-name').text(Path.basename(path));
-
-  var self = this;
-
-  saw(path).on('all', function (ev, file) {
-    self.load();
-    self.$tree.tree('loadData', self.files);
-  });
+  if (this.filepath) {
+    this.editor.openFile(this.filepath);
+    this.selectNodeByPath(this.filepath);
+  }
 }
 
 FileTree.prototype.load = function() {
-  this.files = dirTree(this.path).children;
+  if (this.path === null) {
+    this.files = [{type: 'file', path: null, label: 'untitled'}];
+  } else {
+    this.files = dirTree(this.path).children;
+    this.watch();
+    //$('#project-name').text(Path.basename(path));
+  }
+};
+
+FileTree.prototype.watch = function() {
+  var self = this;
+  if (self.watching === false) {
+    saw(self.path).on('all', function (ev, file) {
+      self.load();
+      self.$tree.tree('loadData', self.files);
+      if (self.filepath) {
+        self.selectNodeByPath(self.filepath);
+      }
+    });
+    self.watching = true;
+  }
 };
 
 FileTree.prototype.display = function() {
@@ -63,7 +85,9 @@ FileTree.prototype.display = function() {
 FileTree.prototype.selectNodeByPath = function(path) {
   var node = this.$tree.tree('getNodeByPath', path);
   this.$tree.find('li').removeClass('selected');
-  $(node.element).addClass('selected');
+  if (node) {
+    $(node.element).addClass('selected');
+  }
 }
 
 function dirTree(filename) {

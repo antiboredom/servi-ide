@@ -3,43 +3,37 @@
   <head>
     <title>Untitled</title>
     <link rel="stylesheet" href="style.css" type="all" />
+    <link rel="stylesheet" href="jqtree.css" type="all" />
     <script src="libs/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
     <script src="libs/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="libs/tree.jquery.js"></script>
   </head>
   <body>
-    <div id="toolbar"></div>
-    <div id="sidebar">
-      <ul>
-        <li><a href="">folder name</a>
-          <ul>
-            <li><a href="">file 1</a></li>
-            <li><a href="">file 2</a></li>
-            <li><a href="">file 3</a></li>
-            <li><a href="">file 4</a></li>
-          </ul>
-        </li>
-
-        <li><a href="">folder 2 name</a>
-          <ul>
-            <li><a href="">file 1</a></li>
-            <li><a href="">file 2</a></li>
-            <li><a href="">file 3</a></li>
-            <li><a href="">file 4</a></li>
-          </ul>
-        </li>
-      </ul>
-
+    <div id="toolbar">
+    </div>
+    <div id="sidebar-container">
+      <div id="sidebar">
+        <h1 id="project-name"></h1>
+        <div id="actions">
+          <button id="run">Run</button>
+          <button id="stop">Stop</button>
+        </div>
+        <div id="filetree"></div>
+      </div>
+      <div id="sidebar-drag"></div>
     </div>
     <div id="main">
       <div id="editor"></div>
       <div id="debug-container">
-        <div id="drag"></div>
+        <div id="debug-drag"></div>
         <div id="debug"></div>
       </div>
     </div>
+
     <input style="display:none;" id="openFile" type="file" />
     <input style="display:none;" id="saveFile" type="file" nwsaveas />
-    <script src="main.js"></script>
+    <script src="filetree.js"></script>
+    <script src="editor.js"></script>
   </body>
 </html>
 
