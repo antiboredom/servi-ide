@@ -1,5 +1,6 @@
 var Path = require('path');
 var saw = require('saw');
+var watch = require('watch');
 var util = require('util');
 var fs = require('fs');
 var gui = require('nw.gui');
@@ -58,12 +59,20 @@ FileTree.prototype.addTempFile = function(path) {
 FileTree.prototype.watch = function() {
   var self = this;
   if (self.watching === false) {
-    if (typeof self.saw === 'undefined') self.saw = saw(self.path);
-    self.saw.on('all', function (ev, file) {
+    watch.watchTree(self.path, function (f, curr, prev) {
       self.reloadTree();
     });
+    //if (typeof self.saw === 'undefined') self.saw = saw(self.path);
+    //self.saw.on('all', function (ev, file) {
+      //self.reloadTree();
+    //});
     self.watching = true;
   }
+};
+
+FileTree.prototype.pauseWatch = function() {
+  watch.unwatchTree(this.path);
+  this.watching = false;
 };
 
 FileTree.prototype.reloadTree = function() {

@@ -219,7 +219,7 @@ Editor.prototype.export = function() {
   var projectdir = this.fileTree.path;
   var exportdir = Path.join(projectdir, 'export');
   if (this.ext === '.js') {
-    this.fileTree.saw.close();
+    this.fileTree.pauseWatch();
     //wrench.rmdirSyncRecursive(exportdir, function(err){});
     wrench.copyDirSyncRecursive(projectdir, exportdir, {
       forceDelete: true,
@@ -234,8 +234,9 @@ Editor.prototype.export = function() {
     var compiled_filename = Path.join(exportdir, Path.relative(projectdir, this.filePath))
     fs.writeFileSync(compiled_filename, data);
     gui.Shell.showItemInFolder(exportdir);
-    this.fileTree.watching = false;
     this.fileTree.watch();
+    //this.fileTree.watching = false;
+    //this.fileTree.watch();
   }
 
 }
