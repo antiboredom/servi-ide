@@ -27,6 +27,10 @@ Mousetrap.bind(['command+w', 'ctrl+w'], function(e) {
   editor.close();
 });
 
+Mousetrap.bind(['command+e', 'ctrl+e'], function(e) {
+  editor.export();
+});
+
 Mousetrap.bind(['command+alt+j', 'ctrl+alt+j'], function(e) {
   editor.window.showDevTools();
 });

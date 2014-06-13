@@ -23,6 +23,10 @@ fileMenu.append(new gui.MenuItem({ label: 'Save As \t\t\u21E7\u2318S', click: fu
 
 fileMenu.append(new gui.MenuItem({ type: 'separator' }));
 
+fileMenu.append(new gui.MenuItem({ label: 'Export \t\u2318E', click: function(){
+  editor.export();
+}}));
+
 fileMenu.append(new gui.MenuItem({ label: 'Save & Run \t\u2318R', click: function(){
   editor.run();
 }}));

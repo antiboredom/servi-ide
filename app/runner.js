@@ -4,14 +4,19 @@ var fs = require('fs');
 var Path = require('path');
 var run;
 
-var header =
-"var servi = require('" + __dirname + "/node_modules/servi/lib/servi.js');" +
-"var app = new servi(true);" +
-"\n\n\n";
+var dev_header = "var servi = require('" + __dirname + "/node_modules/servi/lib/servi.js');";
+var prod_header = "var servi = require('servi');" + "\n\n";
+
+var header = "var app = new servi(true);" + "\n\n\n";
 
 var footer = "\n\n\n" +
 "if (typeof run === 'function') app.defaultRoute(run);" +
 "start();";
+
+function compile(code, dev) {
+  if (dev) return dev_header + header + code + footer;
+  else return prod_header + header + code + footer;
+}
 
 function start(app, code, path, editorWin){
   try {
@@ -26,7 +31,7 @@ function start(app, code, path, editorWin){
 
   var tmpFile = Path.join(Path.dirname(path), ".tmpscript");
 
-  code = header + code + footer;
+  code = compile(code, true);
 
   fs.writeFile(tmpFile, code, function (err,data) {
     if (err) {
@@ -69,4 +74,5 @@ function start(app, code, path, editorWin){
 }
 
 exports.start = start;
+exports.compile = compile;
 

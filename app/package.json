@@ -15,7 +15,8 @@
 
   "dependencies": {
     "saw": "1.0.7",
-    "servi": "0.0.3"
+    "servi": "0.0.3",
+    "wrench": "1.5.8"
   }
 
 }

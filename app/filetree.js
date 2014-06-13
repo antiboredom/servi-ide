@@ -85,7 +85,7 @@ FileTree.prototype.display = function() {
     selectable: false,
     slide: false,
     onCreateLi: function(node, $li) {
-      if (node.name[0] === '.') {
+      if (node.name === 'export' || node.name[0] === '.') {
         try {
           $li.hide();
         } catch(e) {}

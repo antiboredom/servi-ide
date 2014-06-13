@@ -2,6 +2,7 @@ var gui = require('nw.gui');
 var Path = require('path');
 var util = require('util');
 var os = require('os');
+var wrench = require('wrench');
 var runner = require('./runner.js');
 
 var modes = {
@@ -44,7 +45,6 @@ function Editor(projectPath) {
   this.filePath = null;
 
   this.openProject();
-  this.setShortCuts();
 }
 
 Editor.prototype.openProject = function() {
@@ -118,6 +118,7 @@ Editor.prototype.writeFile = function() {
 
 Editor.prototype.detectType = function(path) {
   var ext = Path.extname(path);
+  this.ext = ext;
   return modes[ext] || "text";
 }
 
@@ -209,7 +210,26 @@ Editor.prototype.openOutputWindow = function(port) {
   }
 }
 
-Editor.prototype.setShortCuts = function() {
+Editor.prototype.export = function() {
+  if (this.fileTree.path === null) return false;
+  var servi_ide_dir = Path.dirname(this.window.window.location.pathname);
+  var projectdir = this.fileTree.path;
+  var exportdir = Path.join(projectdir, 'export');
+  if (this.ext === '.js') {
+    wrench.rmdirSyncRecursive(exportdir);
+    wrench.copyDirSyncRecursive(projectdir, exportdir, {
+      forceDelete: true,
+      excludeHiddenUnix: true,
+      inflateSymlinks: false,
+      exclude: 'export'
+    });
+    var node_modules_dir = Path.join(exportdir, 'node_modules');
+    fs.mkdirSync(node_modules_dir);
+    wrench.copyDirSyncRecursive(Path.join(servi_ide_dir, 'node_modules', 'servi'), Path.join(node_modules_dir, 'servi'));
+    var data = runner.compile(this.editor.getSession().getValue(), false);
+    var compiled_filename = Path.join(exportdir, Path.relative(projectdir, this.filePath))
+    fs.writeFileSync(compiled_filename, data);
+  }
 }
 
 function makeDraggable(el, vertical) {
@@ -255,7 +275,6 @@ var editor = new Editor(path);
 
 var opener = $("#openFile");
 opener.change(function(evt) {
-  console.log(editorWindowURL);
   var win = gui.Window.open(editorWindowURL + '?path=' + this.files[0].path, {
     position: 'center',
     width: 800,
