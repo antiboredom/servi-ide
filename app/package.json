@@ -15,7 +15,7 @@
 
   "dependencies": {
     "watch": "0.10.1",
-    "servi": "0.0.3",
+    "servi": "0.0.4",
     "wrench": "1.5.8"
   }
 
