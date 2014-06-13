@@ -2,6 +2,7 @@ var Path = require('path');
 var saw = require('saw');
 var util = require('util');
 var fs = require('fs');
+var gui = require('nw.gui');
 
 function FileTree(path, editor) {
   this.path = path;
@@ -111,6 +112,24 @@ FileTree.prototype.display = function() {
       }
     }
   );
+
+  this.$tree.bind(
+    'tree.contextmenu',
+    function(event) {
+      var node = event.node;
+      var fileTreeMenu = new gui.Menu();
+      //fileTreeMenu.append(new gui.MenuItem({ label: 'Rename', click: function(){
+        //console.log('hi');
+      //}}));
+      //fileTreeMenu.append(new gui.MenuItem({ label: 'Delete', click: function(){
+        //console.log('hi');
+      //}}));
+      fileTreeMenu.append(new gui.MenuItem({ label: 'Reveal', click: function(){
+        gui.Shell.showItemInFolder(node.path);
+      }}));
+      fileTreeMenu.popup(event.click_event.clientX, event.click_event.clientY);
+    }
+  );
 };
 
 FileTree.prototype.selectNodeByPath = function(path) {
@@ -147,4 +166,5 @@ function dirTree(filename) {
   }
   return info;
 }
+
 
