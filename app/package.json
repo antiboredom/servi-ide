@@ -11,5 +11,11 @@
     "resizable": true,
     "show": false,
     "frame": true
+  },
+
+  "dependencies": {
+    "saw": "1.0.7",
+    "servi": "0.0.3"
   }
+
 }

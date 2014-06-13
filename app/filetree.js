@@ -2,7 +2,6 @@ var Path = require('path');
 var saw = require('saw');
 var util = require('util');
 var fs = require('fs');
-var find = require('findit');
 
 function FileTree(path, editor) {
   this.path = path;

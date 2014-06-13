@@ -5,8 +5,8 @@ var Path = require('path');
 var run;
 
 var header =
-"var servi = require('" + __dirname + "/servi.js');" +
-"var app = new servi();" +
+"var servi = require('" + __dirname + "/node_modules/servi/lib/servi.js');" +
+"var app = new servi(true);" +
 "\n\n\n";
 
 var footer = "\n\n\n" +
