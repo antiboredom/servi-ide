@@ -1,5 +1,4 @@
 var Path = require('path');
-var saw = require('saw');
 var watch = require('watch');
 var util = require('util');
 var fs = require('fs');
