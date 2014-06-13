@@ -219,7 +219,8 @@ Editor.prototype.export = function() {
   var projectdir = this.fileTree.path;
   var exportdir = Path.join(projectdir, 'export');
   if (this.ext === '.js') {
-    wrench.rmdirSyncRecursive(exportdir);
+    this.fileTree.saw.close();
+    //wrench.rmdirSyncRecursive(exportdir, function(err){});
     wrench.copyDirSyncRecursive(projectdir, exportdir, {
       forceDelete: true,
       excludeHiddenUnix: true,
@@ -232,7 +233,11 @@ Editor.prototype.export = function() {
     var data = runner.compile(this.editor.getSession().getValue(), false);
     var compiled_filename = Path.join(exportdir, Path.relative(projectdir, this.filePath))
     fs.writeFileSync(compiled_filename, data);
+    gui.Shell.showItemInFolder(exportdir);
+    this.fileTree.watching = false;
+    this.fileTree.watch();
   }
+
 }
 
 function makeDraggable(el, vertical) {

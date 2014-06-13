@@ -58,7 +58,8 @@ FileTree.prototype.addTempFile = function(path) {
 FileTree.prototype.watch = function() {
   var self = this;
   if (self.watching === false) {
-    saw(self.path).on('all', function (ev, file) {
+    if (typeof self.saw === 'undefined') self.saw = saw(self.path);
+    self.saw.on('all', function (ev, file) {
       self.reloadTree();
     });
     self.watching = true;
