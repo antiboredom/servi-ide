@@ -26,7 +26,7 @@ function start(app, code, path, editorWin){
   }
 
   if (path === null) {
-    path = gui.App.dataPath + "/.tmpscript";
+    path = global.appDataPath;
   }
 
   var tmpFile = Path.join(Path.dirname(path), ".tmpscript");
@@ -54,7 +54,7 @@ function start(app, code, path, editorWin){
           if (serverLines[i].indexOf('Server has started') > -1) {
             var serverParams = serverLines[i].split(' ');
             var port = serverParams[serverParams.length - 1];
-            editorWin.openOutputWindow(port);
+            editorWin.openOutputWindow(port, run);
           }
 
         }

@@ -5,6 +5,8 @@ var os = require('os');
 var wrench = require('wrench');
 var runner = require('./runner.js');
 
+global.appDataPath = gui.App.dataPath;
+
 var modes = {
   ".html": "ejs",
   ".htm": "ejs",
@@ -191,7 +193,7 @@ Editor.prototype.run = function() {
   runner.start(gui.App, data, path, this);
 };
 
-Editor.prototype.openOutputWindow = function(port) {
+Editor.prototype.openOutputWindow = function(port, nodeProcess) {
   var self = this;
   if (this.outputWin == null) {
     this.outputWin = gui.Window.open("http://localhost:" + port, {
@@ -201,6 +203,7 @@ Editor.prototype.openOutputWindow = function(port) {
       toolbar: true
     });
     this.outputWin.on("close", function(){
+      nodeProcess.kill();
       this.close(true);
       self.outputWin = null;
     });
@@ -261,6 +264,10 @@ $('#run').click(function(){
   editor.run();
 });
 
+$('#export').click(function(){
+  editor.export();
+});
+
 var debugConsole = $('#debug');
 global.log = function(msg) {
   debugConsole.append('<pre>' + msg + '</pre>');
@@ -314,15 +321,18 @@ editor.window.on("close", function(){
     }
   }
   if (totalUnsaved > 0) {
-    if (confirm('You have unsaved files. Save before closing?')) {
-      for(var p in unsavedFiles) {
-        if(unsavedFiles.hasOwnProperty(p)) {
-          fs.writeFileSync(p, unsavedFiles[p], "utf8");
-        }
-      }
+    if (confirm('You have unsaved files. Are you sure you want to exit?')) {
+      //for(var p in unsavedFiles) {
+        //if(unsavedFiles.hasOwnProperty(p)) {
+          //fs.writeFileSync(p, unsavedFiles[p], "utf8");
+        //}
+      //}
+      this.close(true);
+      editor.window = null;
     }
+  } else {
+    this.close(true);
+    editor.window = null;
   }
-  this.close(true);
-  editor.window = null;
 });
 
