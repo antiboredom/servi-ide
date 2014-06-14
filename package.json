@@ -1,7 +1,7 @@
 {
   "name": "servi",
   "version": "0.0.1",
-  "description": "simple serverside javascript",
+  "description": "simple server-side javascript",
   "author": "Sam Lavigne",
   "devDependencies": {
     "grunt": "~0.4.5",
