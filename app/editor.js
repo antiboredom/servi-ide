@@ -230,13 +230,16 @@ Editor.prototype.openOutputWindow = function(port, nodeProcess) {
 }
 
 Editor.prototype.export = function() {
-  if (this.fileTree.path === null) return false;
-  var servi_ide_dir = Path.dirname(this.window.window.location.pathname);
-  var projectdir = this.fileTree.path;
-  var exportdir = Path.join(projectdir, 'export');
-  if (this.ext === '.js') {
-    this.fileTree.pauseWatch();
-    //wrench.rmdirSyncRecursive(exportdir, function(err){});
+  var self = this;
+  if (self.fileTree.path === null) return false;
+  if (!self.mainFile && self.ext === '.js') self.mainFile = self.filePath;
+  if (!self.mainFile) return false;
+  fs.readFile(self.mainFile, function(err, filecontents){
+    if (err) throw err;
+    self.fileTree.pauseWatch();
+    var servi_ide_dir = Path.dirname(self.window.window.location.pathname);
+    var projectdir = self.fileTree.path;
+    var exportdir = Path.join(projectdir, 'export');
     wrench.copyDirSyncRecursive(projectdir, exportdir, {
       forceDelete: true,
       excludeHiddenUnix: true,
@@ -246,15 +249,12 @@ Editor.prototype.export = function() {
     var node_modules_dir = Path.join(exportdir, 'node_modules');
     fs.mkdirSync(node_modules_dir);
     wrench.copyDirSyncRecursive(Path.join(servi_ide_dir, 'node_modules', 'servi'), Path.join(node_modules_dir, 'servi'));
-    var data = runner.compile(this.editor.getSession().getValue(), false);
-    var compiled_filename = Path.join(exportdir, Path.relative(projectdir, this.filePath))
+    var compiled_filename = Path.join(exportdir, Path.relative(projectdir, self.mainFile))
+    var data = runner.compile(filecontents, false);
     fs.writeFileSync(compiled_filename, data);
     gui.Shell.showItemInFolder(exportdir);
-    this.fileTree.watch();
-    //this.fileTree.watching = false;
-    //this.fileTree.watch();
-  }
-
+    self.fileTree.watch();
+  });
 }
 
 Editor.prototype.changeFontSize = function(val) {
