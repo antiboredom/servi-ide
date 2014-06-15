@@ -35,6 +35,14 @@ Mousetrap.bind(['command+alt+j', 'ctrl+alt+j'], function(e) {
   editor.window.showDevTools();
 });
 
+Mousetrap.bind(['command+=', 'ctrl+='], function(e) {
+  editor.changeFontSize(1);
+});
+
+Mousetrap.bind(['command+-', 'ctrl+-'], function(e) {
+  editor.changeFontSize(-1);
+});
+
 Mousetrap.stopCallback = function(e, element, combo) {
   return false;
 }

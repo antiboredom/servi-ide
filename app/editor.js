@@ -21,10 +21,13 @@ function Editor(projectPath) {
   this.fileBuffer = {};
   this.projectPath = projectPath;
   this.temporaryFiles = [];
+  this.mainFile = null;
 
   this.window = gui.Window.get();
   this.ace = window.ace;
   this.editor = ace.edit("editor");
+  this.editor.setTheme("ace/theme/tomorrow");
+  //this.editor.setTheme("ace/themes/clouds");
   this.editorSession = this.editor.getSession();
   this.editorSession.setMode("ace/mode/javascript");
   this.editor.setShowPrintMargin(false);
@@ -171,8 +174,10 @@ Editor.prototype.removeTempFile = function() {
 
 Editor.prototype.newWindow = function() {
   var win = gui.Window.open(editorWindowURL, {
-    position: 'center',
-    width: 800,
+    x: this.window.x + 50,
+    y: this.window.y + 50,
+    //position: 'center',
+    width: 1200,
     height: 800,
     toolbar: false,
     focus: true
@@ -188,17 +193,28 @@ Editor.prototype.close = function() {
 };
 
 Editor.prototype.run = function() {
+  var ext = Path.extname(this.filePath);
+  if (!this.mainFile && ext === '.js') this.mainFile = this.filePath;
+  if (!this.mainFile) return false;
   gui.App.clearCache();
-  var data = this.editor.getSession().getValue();
-  runner.start(gui.App, data, path, this);
+  var self = this;
+  fs.readFile(this.mainFile, function(err, data){
+    if (err) throw err;
+    runner.start(gui.App, data, path, self);
+  });
+  //var data = this.editor.getSession().getValue();
+};
+
+Editor.prototype.setMainFile = function(path) {
+  this.mainFile = path;
 };
 
 Editor.prototype.openOutputWindow = function(port, nodeProcess) {
   var self = this;
   if (this.outputWin == null) {
     this.outputWin = gui.Window.open("http://localhost:" + port, {
-      x: this.window.x + 100,
-      y: this.window.y + 100,
+      x: this.window.x + 50,
+      y: this.window.y + 50,
       focus: true,
       toolbar: true
     });
@@ -241,7 +257,13 @@ Editor.prototype.export = function() {
 
 }
 
-function makeDraggable(el, vertical) {
+Editor.prototype.changeFontSize = function(val) {
+  var $e = $('#editor');
+  var fontSize = parseInt($e.css('font-size'));
+  $e.css('font-size', fontSize + val);
+}
+
+function makeDraggable(el, vertical, reverse) {
   $(el).on('mousedown', function(e){
     var $dragable = $(this).parent(),
     handleDim = vertical ? $(this).height() : $(this).width(),
@@ -256,14 +278,14 @@ function makeDraggable(el, vertical) {
       var my = vertical ? (me.pageY - pY) : (pY - me.pageX);
       if (startDim - my >= handleDim) {
         if (vertical) $dragable.css({ height: startDim - my });
-        else $dragable.css({ width: startDim - my });
+        else $dragable.css({ width: startDim + (reverse ? my : my * -1) });
         editor.editor.resize();
       }
     });
   });
 }
 
-makeDraggable('#debug-drag', true);
+makeDraggable('#debug-drag', false, true);
 makeDraggable('#sidebar-drag', false);
 
 $('#run').click(function(){
@@ -272,6 +294,10 @@ $('#run').click(function(){
 
 $('#export').click(function(){
   editor.export();
+});
+
+$('#add').click(function(){
+  editor.newFile();
 });
 
 var debugConsole = $('#debug');
@@ -289,8 +315,10 @@ var editor = new Editor(path);
 var opener = $("#openFile");
 opener.change(function(evt) {
   var win = gui.Window.open(editorWindowURL + '?path=' + this.files[0].path, {
-    position: 'center',
-    width: 800,
+    x: editor.window.x + 50,
+    y: editor.window.y + 50,
+    //position: 'center',
+    width: 1200,
     height: 800,
     toolbar: false,
     focus: true,

@@ -22,7 +22,7 @@ ul.jqtree-tree li.jqtree_common {
     clear: both;
     list-style-type: none;
     padding: 3px 0px;
-    padding-left: 30px;
+    /*padding-left: 45px;*/
 }
 
 ul.jqtree-tree ul.jqtree_common li.jqtree_common {
@@ -32,8 +32,8 @@ ul.jqtree-tree ul.jqtree_common li.jqtree_common {
 ul.jqtree-tree .jqtree-toggler {
     display: block;
     position: absolute;
-    left: -1.5em;
-    top: 20%;
+    margin-left: -2.5em;
+    top: 10%;
     font-size: 12px;
     line-height: 12px;
     border-bottom: none;
@@ -51,7 +51,7 @@ ul.jqtree-tree .jqtree-element {
 }
 
 ul.jqtree-tree .jqtree-title {
-    color: #1C4257;
+    color: #58585B;
     vertical-align: middle;
 }
 
@@ -132,6 +132,7 @@ ul.jqtree-tree .jqtree-element {
     width: 100%; /* todo: why is this in here? */
     *width: auto; /* ie7 fix; issue 41 */
     position: relative;
+    padding-left: 45px;
 }
 
 ul.jqtree-tree li.jqtree-selected > .jqtree-element,
@@ -149,6 +150,7 @@ ul.jqtree-tree .jqtree-moving > .jqtree-element .jqtree-title {
 }
 
 ul.jqtree-tree li.selected, ul.jqtree-tree li.selected span {
-  background-color:#555;
-  color: #fff;
+  background-color: #f6f6f6;
+  /*background-color: #F1F1F2;*/
+  /*color: #fff;*/
 }
