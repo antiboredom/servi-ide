@@ -213,7 +213,7 @@ Editor.prototype.setMainFile = function(path) {
 
 Editor.prototype.openOutputWindow = function(port, nodeProcess) {
   var self = this;
-  if (this.outputWin == null) {
+  if (this.outputWin === null) {
     this.outputWin = gui.Window.open("http://localhost:" + port, {
       x: this.window.x + 50,
       y: this.window.y + 50,
@@ -226,8 +226,14 @@ Editor.prototype.openOutputWindow = function(port, nodeProcess) {
       self.outputWin = null;
     });
   } else {
-    this.outputWin.window.location = "http://localhost:" + port;
-    this.outputWin.focus();
+    try {
+      this.outputWin.window.location = "http://localhost:" + port;
+      this.outputWin.focus();
+    } catch(e) {
+      this.outputWin = null;
+      this.openOutputWindow(port, nodeProcess);
+      //console.log(util.inspect(e));
+    }
   }
 }
 
