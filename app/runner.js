@@ -1,6 +1,7 @@
 var spawn = require('child_process').spawn;
 var exec = require('child_process').exec;
 var fs = require('fs');
+var os = require('os');
 var Path = require('path');
 var run;
 
@@ -15,7 +16,7 @@ var footer = "\n\n\n" +
 
 function compile(code, dev) {
   if (dev) return dev_header + header + code + footer;
-  else return prod_header + header + code + footer;
+  else return prod_header + header + "port(80);\n\n" + code + footer;
 }
 
 function start(app, code, path, editorWin){
@@ -26,11 +27,11 @@ function start(app, code, path, editorWin){
   }
 
   if (path === null) {
-    path = global.appDataPath;
+    path = os.tmpdir();
+    //path = global.appDataPath;
   }
 
   var tmpFile = Path.join(Path.dirname(path), ".tmpscript");
-
   code = compile(code, true);
 
   fs.writeFile(tmpFile, code, function (err,data) {
