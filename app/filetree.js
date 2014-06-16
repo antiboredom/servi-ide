@@ -61,10 +61,6 @@ FileTree.prototype.watch = function() {
     watch.watchTree(self.path, function (f, curr, prev) {
       self.reloadTree();
     });
-    //if (typeof self.saw === 'undefined') self.saw = saw(self.path);
-    //self.saw.on('all', function (ev, file) {
-      //self.reloadTree();
-    //});
     self.watching = true;
   }
 };
@@ -75,9 +71,11 @@ FileTree.prototype.pauseWatch = function() {
 };
 
 FileTree.prototype.reloadTree = function() {
+  var state = this.$tree.tree('getState');
   this.load();
   this.$tree.tree('loadData', this.files);
   this.loadTempFiles();
+  this.$tree.tree('setState', state);
   if (this.filepath) {
     this.selectNodeByPath(this.filepath);
   }
@@ -164,11 +162,6 @@ FileTree.prototype.display = function() {
     }
   );
 
-  $('#filetree .runfile').click(function(e) {
-    alert('hi');
-    console.log($(this).data('file'));
-  });
-
 };
 
 FileTree.prototype.selectNodeByPath = function(path) {
@@ -190,7 +183,8 @@ function dirTree(filename) {
   var stats = fs.lstatSync(filename);
   var info = {
     path: filename,
-    label: label
+    label: label,
+    id: filename
   };
 
   if (label[0] === '.' || label === 'node_modules' || label === 'export') info.hidden = true;
