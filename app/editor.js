@@ -302,6 +302,10 @@ $('#add').click(function(){
   editor.newFile();
 });
 
+$('#settings').click(function(){
+  alert('note to self: make this do something');
+});
+
 var debugConsole = $('#debug');
 global.log = function(msg) {
   debugConsole.append('<pre>' + msg + '</pre>');
