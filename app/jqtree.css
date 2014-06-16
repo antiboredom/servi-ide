@@ -51,8 +51,9 @@ ul.jqtree-tree .jqtree-element {
 }
 
 ul.jqtree-tree .jqtree-title {
-    color: #58585B;
-    vertical-align: middle;
+    /*color: #58585B;*/
+  color: #231f20;
+  vertical-align: middle;
 }
 
 ul.jqtree-tree li.jqtree-folder {
@@ -132,7 +133,7 @@ ul.jqtree-tree .jqtree-element {
     width: 100%; /* todo: why is this in here? */
     *width: auto; /* ie7 fix; issue 41 */
     position: relative;
-    padding-left: 45px;
+    padding-left: 40px;
 }
 
 ul.jqtree-tree li.jqtree-selected > .jqtree-element,
@@ -151,6 +152,4 @@ ul.jqtree-tree .jqtree-moving > .jqtree-element .jqtree-title {
 
 ul.jqtree-tree li.selected, ul.jqtree-tree li.selected span {
   background-color: #f6f6f6;
-  /*background-color: #F1F1F2;*/
-  /*color: #fff;*/
 }

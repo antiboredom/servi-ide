@@ -14,8 +14,10 @@
 }
 
 body, html {
-  background: #C8C4C4;
-  color: #58585B;
+  /*background: #C8C4C4;*/
+  background: #c8c5c2;
+  /*color: #58585B;*/
+  color: #231f20;
   height: 100%;
   margin: 0;
   padding: 0;
@@ -45,6 +47,7 @@ body {
 
 #filetree {
   margin-top: 50px;
+  margin-left: 10px;
 }
 
 #filetree .icon {
@@ -101,7 +104,7 @@ body {
 #sidebar-drag {
   -webkit-flex: none;
   cursor: col-resize;
-  background-color: #C8Cw4C4;
+  background-color: none;
   position: absolute;
   width: 7px;
   height: 100%;
@@ -137,7 +140,15 @@ body {
 }
 
 #actions button, #actions button img {
-  width: 25px;
+  width: 22px;
+}
+
+#actions button img {
+  opacity: .6;
+}
+
+#actions button img:hover {
+  opacity: 1;
 }
 
 #actions #add, #actions #export {
@@ -150,7 +161,7 @@ body {
 }
 
 #project-name {
-  padding-left: 25px;
+  padding-left: 20px;
   font-size: 18px;
   font-weight: normal;
 }

@@ -69,12 +69,12 @@ Editor.prototype.openFile = function(path) {
 
   if (self.fileBuffer[path]) {
     self.editor.setReadOnly(false);
-    self.editor.setValue(self.fileBuffer[path], -1);
+    self.editor.session.setValue(self.fileBuffer[path], -1);
     self.handleFileChange();
   } else {
     fs.readFile(path, "utf8", function(err, file) {
       self.editor.setReadOnly(false);
-      self.editor.setValue(file, -1);
+      self.editor.session.setValue(file, -1);
       self.openedFiles[path] = file;
       self.fileBuffer[path] = file;
       self.handleFileChange();
@@ -88,6 +88,8 @@ Editor.prototype.handleFileChange = function() {
   this.mode = this.detectType(this.filePath);
   this.editor.getSession().setMode("ace/mode/" + this.mode);
   this.editor.focus();
+  this.editorSession.$undoManager.reset();
+  //this.editor.editorSession.$undoManager.reset();
 };
 
 Editor.prototype.getCurrentFilename = function() {
