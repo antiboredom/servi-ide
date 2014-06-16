@@ -89,7 +89,7 @@ body {
   top: 4px;
   display: none;
   cursor: pointer;
-  opacity: .5;
+  opacity: .4;
 }
 
 .jqtree-element:hover .runfile {
@@ -203,6 +203,10 @@ body {
   width: 10px;
   -webkit-flex: none;
   cursor: col-resize;
+}
+
+#running-file {
+
 }
 
 #debug {
