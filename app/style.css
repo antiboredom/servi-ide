@@ -185,7 +185,7 @@ body {
 
 
 #debug-container {
-  -webkit-user-select: none;
+  /*-webkit-user-select: none;*/
   width: 300px;
   /*background-color: #ccc;*/
   display: -webkit-flex;
