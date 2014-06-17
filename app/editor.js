@@ -186,7 +186,8 @@ Editor.prototype.newWindow = function() {
     width: 1200,
     height: 800,
     toolbar: false,
-    focus: true
+    focus: true,
+    show: false
   });
 };
 
@@ -358,6 +359,7 @@ saver.change(function(evt) {
 
 onload = function() {
   gui.Window.get().show();
+  gui.Window.get().focus();
   editor.editor.focus();
 }
 
