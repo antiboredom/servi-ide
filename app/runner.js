@@ -19,6 +19,10 @@ function compile(code, dev) {
   else return prod_header + header + "port(80);\n\n" + code + footer;
 }
 
+function killChild() {
+  run.kill();
+}
+
 function start(app, code, path, editorWin){
   try {
     run.kill();
@@ -49,13 +53,12 @@ function start(app, code, path, editorWin){
       var serverOut = '' + data;
       log(serverOut);
       if (serverOut.indexOf('Server has started') > -1 ) {
-        //console.log(serverOut);
         var serverLines = serverOut.split('\n');
         for (var i = 0; i < serverLines.length; i++) {
           if (serverLines[i].indexOf('Server has started') > -1) {
             var serverParams = serverLines[i].split(' ');
             var port = serverParams[serverParams.length - 1];
-            editorWin.openOutputWindow(port, run);
+            editorWin.openOutputWindow(port);
           }
 
         }
@@ -75,5 +78,6 @@ function start(app, code, path, editorWin){
 }
 
 exports.start = start;
+exports.killChild = killChild;
 exports.compile = compile;
 

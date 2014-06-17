@@ -211,7 +211,7 @@ Editor.prototype.setMainFile = function(path) {
   this.mainFile = path;
 };
 
-Editor.prototype.openOutputWindow = function(port, nodeProcess) {
+Editor.prototype.openOutputWindow = function(port) {
   var self = this;
   if (this.outputWin === null) {
     this.outputWin = gui.Window.open("http://localhost:" + port, {
@@ -221,7 +221,9 @@ Editor.prototype.openOutputWindow = function(port, nodeProcess) {
       toolbar: true
     });
     this.outputWin.on("close", function(){
-      nodeProcess.kill();
+      //console.log('killing from window ', nodeProcess.pid);
+      //nodeProcess.kill();
+      runner.killChild();
       this.close(true);
       self.outputWin = null;
     });
