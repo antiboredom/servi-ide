@@ -67,19 +67,21 @@ Editor.prototype.openFile = function(path) {
   self.filePath = path;
   self.editor.setReadOnly(true);
 
-  if (self.fileBuffer[path]) {
+  fs.readFile(path, "utf8", function(err, file) {
+    if (self.fileBuffer[path] && file !== self.openedFiles[path]) {
+      if (confirm('The file has been changed by another program. Do you want to reload it?')) {
+        self.fileBuffer[path] = file;
+        self.openedFiles[path] = file;
+      }
+    } else {
+      self.openedFiles[path] = file;
+      self.fileBuffer[path] = file;
+    }
     self.editor.setReadOnly(false);
     self.editor.session.setValue(self.fileBuffer[path], -1);
     self.handleFileChange();
-  } else {
-    fs.readFile(path, "utf8", function(err, file) {
-      self.editor.setReadOnly(false);
-      self.editor.session.setValue(file, -1);
-      self.openedFiles[path] = file;
-      self.fileBuffer[path] = file;
-      self.handleFileChange();
-    });
-  }
+  });
+
 };
 
 Editor.prototype.handleFileChange = function() {
@@ -167,6 +169,8 @@ Editor.prototype.removeTempFile = function() {
   var index = this.temporaryFiles.indexOf(this.filePath);
   if (index > -1) {
     this.temporaryFiles.splice(index, 1);
+    delete this.openedFiles[this.filePath];
+    delete this.fileBuffer[this.filePath];
   }
   var index = this.fileTree.temporaryFiles.indexOf(this.filePath);
   if (index > -1) {
