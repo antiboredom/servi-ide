@@ -238,7 +238,7 @@ Editor.prototype.openOutputWindow = function(port) {
       this.outputWin.focus();
     } catch(e) {
       this.outputWin = null;
-      this.openOutputWindow(port, nodeProcess);
+      this.openOutputWindow(port);
       //console.log(util.inspect(e));
     }
   }
@@ -325,14 +325,15 @@ global.log = function(msg) {
   debugConsole.scrollTop(debugConsole[0].scrollHeight);
 }
 
-var path = window.location.search.substring(1).split('=')[1] || null;
+//var path = window.location.search.substring(1).split('=')[1] || null;
+var path = window.PATH || null
 var editorWindowURL = window.location.href.split('?')[0];
-//var path = var path = window.PATH || gui.App.argv[0] || null
 
 var editor = new Editor(path);
 
 var opener = $("#openFile");
 opener.change(function(evt) {
+  var toOpen = this.files[0].path;
   var win = gui.Window.open(editorWindowURL + '?path=' + this.files[0].path, {
     x: editor.window.x + 50,
     y: editor.window.y + 50,
@@ -342,6 +343,9 @@ opener.change(function(evt) {
     toolbar: false,
     focus: true,
     show: false
+  });
+  win.on('document-start', function(){
+    win.window.PATH = toOpen;
   });
   opener.val('');
 });
